@@ -31,10 +31,12 @@ export default function App() {
 
       setCampaigns(campaignsData.campaigns || []);
       setAggregateInsights(insightsData.insights);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
+      setTimeout(() => {
+        fetchData();
+      }, 5000);
     }
   };
 
@@ -67,12 +69,6 @@ export default function App() {
                 Campaign monitoring and analytics
               </p>
             </div>
-            <button
-              onClick={fetchData}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Refresh Data
-            </button>
           </div>
         </div>
       </div>

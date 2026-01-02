@@ -14,7 +14,6 @@ export const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
   onClose,
 }) => {
   const [insights, setInsights] = useState<CampaignInsights | null>(null);
-  const [isStreaming, setIsStreaming] = useState(true);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   useEffect(() => {
@@ -32,7 +31,6 @@ export const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
       eventSourceRef.current.close();
     }
 
-    setIsStreaming(true);
     const eventSource = campaignApi.streamCampaignInsights(campaign.id);
 
     eventSource.onmessage = (event) => {
@@ -42,9 +40,8 @@ export const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
       } catch (error) {}
     };
 
-    eventSource.onerror = (error) => {
+    eventSource.onerror = () => {
       eventSource.close();
-      setIsStreaming(false);
 
       setTimeout(() => {
         if (eventSourceRef.current === eventSource) {
@@ -53,9 +50,7 @@ export const CampaignDetailsModal: React.FC<CampaignDetailsModalProps> = ({
       }, 5000);
     };
 
-    eventSource.onopen = () => {
-      setIsStreaming(true);
-    };
+    eventSource.onopen = () => {};
 
     eventSourceRef.current = eventSource;
   };
